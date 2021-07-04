@@ -1,6 +1,6 @@
-package com.workflow.parser;
+package com.workflow.userdefinedelement.parser;
 
-import com.workflow.task.LikeElement;
+import com.workflow.userdefinedelement.task.LikeElement;
 import org.activiti.bpmn.converter.child.BaseChildElementParser;
 import org.activiti.bpmn.model.BaseElement;
 import org.activiti.bpmn.model.BpmnModel;

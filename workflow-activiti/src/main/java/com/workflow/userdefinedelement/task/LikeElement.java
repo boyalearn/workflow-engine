@@ -1,4 +1,4 @@
-package com.workflow.task;
+package com.workflow.userdefinedelement.task;
 
 import org.activiti.bpmn.model.ExtensionElement;
 
