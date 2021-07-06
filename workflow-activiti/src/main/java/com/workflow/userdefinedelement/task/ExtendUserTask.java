@@ -24,6 +24,4 @@ public class ExtendUserTask extends UserTask {
         this.customGroupIdentityLinks = baseElement.getCustomGroupIdentityLinks();
         this.customProperties = baseElement.getCustomProperties();
     }
-
-
 }

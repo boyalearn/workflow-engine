@@ -7,18 +7,32 @@ import org.activiti.bpmn.model.BpmnModel;
 
 import javax.xml.stream.XMLStreamReader;
 
+
+/**
+ * <user:like value="coding"/>
+ *
+ * 示例模板
+ *
+ * user-defined-element-parser
+ *
+ */
 public class UserChildElementParser extends BaseChildElementParser {
+
+    private static final String ELEMENT_NAME = "like";
+
+    private static final String VALUE_KEY = "value";
+
     @Override
     public String getElementName() {
-        return "like";
+        return ELEMENT_NAME;
     }
 
     @Override
     public void parseChildElement(XMLStreamReader xmlStreamReader, BaseElement baseElement, BpmnModel bpmnModel) throws Exception {
         LikeElement extensionElement = new LikeElement();
-        extensionElement.setName("like");
+        extensionElement.setName(ELEMENT_NAME);
         baseElement.addExtensionElement(extensionElement);
-        String value = xmlStreamReader.getAttributeValue("", "value");
+        String value = xmlStreamReader.getAttributeValue("", VALUE_KEY);
         extensionElement.setValue(value);
     }
 }
