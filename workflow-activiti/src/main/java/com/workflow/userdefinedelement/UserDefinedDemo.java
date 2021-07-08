@@ -27,14 +27,14 @@ public class UserDefinedDemo extends BaseApplication {
     public static void main(String[] args) {
         ProcessEngineConfiguration config = config(args);
 
-        deploy();
+        //deploy();
         List<Task> list = config.buildProcessEngine().getTaskService().createTaskQuery().list();
         ProcessEngine processEngine = config.buildProcessEngine();
 
-        List<ProcessDefinition> list1 = processEngine.getRepositoryService().createProcessDefinitionQuery().list();
+        /*List<ProcessDefinition> list1 = processEngine.getRepositoryService().createProcessDefinitionQuery().list();
         for (ProcessDefinition model : list1) {
             System.out.println(model);
-        }
+        }*/
 
         for (Task task : list) {
             String processDefinitionId = task.getProcessDefinitionId();
@@ -47,6 +47,7 @@ public class UserDefinedDemo extends BaseApplication {
             ProcessDefinitionEntity processDefinition = (ProcessDefinitionEntity) processEngine.getRepositoryService().getProcessDefinition(processDefinitionId);
             TaskDefinition taskDefinition = processDefinition.getTaskDefinitions().get(definedKey);
             List<HistoricTaskInstance> historicTaskInstances = queryHistoryTask(processInstanceId);
+            processEngine.getTaskService().complete(task.getId());
             System.out.println();
         }
 
