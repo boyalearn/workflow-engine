@@ -1,0 +1,429 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>模型管理</title>
+    <!-- 引入样式 -->
+    <link href="/css/index.css" rel="stylesheet"/>
+    <!-- <link rel="stylesheet" href="/css/font-awesome/css/font-awesome.min.css">-->
+</head>
+<style>
+    .el-message-box {
+        width: 80%;
+    }
+    .el-table .warning-row {
+        background: oldlace;
+    }
+
+    .el-table .success-row {
+        background: #f0f9eb;
+    }
+
+    pre, code {
+        font-size: 0.85em;
+        font-family: Consolas, Inconsolata, Courier, monospace;
+    }
+
+    code {
+        margin: 0 0.15em;
+        padding: 0 0.3em;
+        white-space: pre-wrap;
+        border: 1px solid #EAEAEA;
+        background-color: #F8F8F8;
+        border-radius: 3px;
+        display: inline; /* added to fix Yahoo block display of inline code */
+    }
+
+    pre {
+        font-size: 1em;
+        line-height: 1.2em;
+    }
+
+    pre code {
+        white-space: pre;
+        overflow: auto; /* fixes issue #70: Firefox/Thunderbird: Code blocks with horizontal scroll would have bad background colour */
+        border-radius: 3px;
+        border: 1px solid #CCC;
+        padding: 0.5em 0.7em;
+        display: block !important; /* added to counteract the Yahoo-specific `code` rule; without this, code blocks in Blogger are broken */
+    }
+
+    /* In edit mode, Wordpress uses a `* { font: ...;} rule+style that makes highlighted
+    code look non-monospace. This rule will override it. */
+    .markdown-here-wrapper[data-md-url*="wordpress."] code span {
+        font: inherit;
+    }
+
+    /* Wordpress adds a grey background to `pre` elements that doesn't go well with
+    our syntax highlighting. */
+    .markdown-here-wrapper[data-md-url*="wordpress."] pre {
+        background-color: transparent;
+    }
+
+
+</style>
+<body>
+<div id="app">
+    <el-divider>
+        <el-tag size="medium" style="font-size: 25px">基于SpringBoot(1.5.2.RELEASE)+Activiti(5.22.0)的流程设计器 Activiti Modeler</el-tag>
+    </el-divider>
+    <el-tabs type="border-card"  v-model="activeName" >
+        <el-tab-pane label="绘制流程" name="first">
+
+            <div style="width: 100%;margin: 10px">
+                <el-table
+                        :data="models"
+                        :row-class-name="tableRowClassName"
+                        border
+                        height="700"
+                        size="mini"
+                        style="width: 100%"
+                        v-loading="loading">
+                    <el-table-column align="center" label="模型列表">
+                        <el-table-column
+                                fixed
+                                label="模型编号"
+                                prop="id"
+                                width="80">
+                        </el-table-column>
+                        <el-table-column
+                                label="模型名称"
+                                prop="name"
+                        >
+                        </el-table-column>
+                        <el-table-column
+                                label="版本"
+                                prop="version"
+                                width="80"
+                        >
+                        </el-table-column>
+                        <el-table-column
+                                label="描述"
+                                prop="metaInfo.description"
+                        >
+                        </el-table-column>
+                        <el-table-column
+                                label="修订版本"
+                                prop="revision"
+                                width="80">
+                        </el-table-column>
+                        <el-table-column
+                                label="创建时间"
+                                prop="createTime"
+                                width="150">
+                        </el-table-column>
+                        <el-table-column
+                                label="最后更新时间"
+                                prop="lastUpdateTime"
+                                width="150">
+                        </el-table-column>
+                    </el-table-column>
+                    <el-table-column
+                            fixed="right"
+                            label="操作"
+                            width="750">
+                        <template slot="header" slot-scope="scope" >
+                            <el-button @click="newModel" icon="el-icon-edit"  size="mini" style="margin-left: 10px"  type="primary" >绘制流程</el-button>
+                        </template>
+                        <template slot-scope="scope">
+                            <el-button  @click="editOpen(scope.row)" size="mini" v-if="scope.row.deploymentId ==null">编辑</el-button>
+                            <el-button @click="deleteOpen(scope.row)" size="mini" type="danger" v-if="scope.row.deploymentId ==null">删除</el-button>
+                            <el-button @click="deploymentOpen(scope.row)" size="mini" type="primary"
+                                       v-if="scope.row.deploymentId ==null">发布部署
+                            </el-button>
+                            <el-button @click="previewDeploymentsOpen(scope.row)" size="mini"  type="warning"
+                                       v-if="scope.row.editorSourceExtraValueId !=null">预览bpmn.XML
+                            </el-button>
+                            <el-button @click="previewDeploymentsOpenView(scope.row)" size="mini"  type="warning"
+                                       v-if="scope.row.editorSourceExtraValueId !=null">预览流程图
+                            </el-button>
+                            <el-button @click="outDeploymentsOpen(scope.row)" size="mini" type="success"
+                                       v-if="scope.row.editorSourceExtraValueId !=null">导出bpmn.XML
+                            </el-button>
+                            <el-button @click="outDeploymentsOpenView(scope.row)" size="mini" type="success"
+                                       v-if="scope.row.editorSourceExtraValueId !=null">导出流程图
+                            </el-button>
+                        </template>
+                    </el-table-column>
+                </el-table>
+                <div style="margin-top: 10px">
+                    <el-pagination
+                            :current-page="1"
+                            :page-size="20"
+                            :page-sizes="[20, 30, 40, 50]"
+                            :total="total"
+                            @current-change="handleCurrentChange"
+                            @size-change="handleSizeChange"
+                            background
+                            layout="total, sizes, prev, pager, next, jumper"
+                            popper-class="fa fa-ravelry fa-fw">
+                    </el-pagination>
+                </div>
+            </div>
+        </el-tab-pane>
+        <el-tab-pane label="部署列表" name="second">
+            <div style="margin: 10px">
+                <el-table
+                        :data="deployments"
+                        border
+                        height="700"
+                        size="mini"
+                        style="width: 100%"
+                        v-loading="loading_">
+                    <el-table-column align="center" label="部署列表">
+                        <el-table-column
+                                fixed
+                                label="模型编号"
+                                prop="id"
+                                width="80">
+                        </el-table-column>
+                        <el-table-column
+                                label="模型名称"
+                                prop="name">
+                        </el-table-column>
+                        <el-table-column
+                                label="部署时间"
+                                prop="deploymentTime"
+                                width="200">
+                        </el-table-column>
+                        <el-table-column
+                                fixed="right"
+                                label="操作"
+                                width="400">
+                            <template slot-scope="scope">
+                                <el-button @click="deleteDeploymentsOpen(scope.row)" size="mini" type="danger">删除
+                                </el-button>
+
+                            </template>
+                        </el-table-column>
+                    </el-table-column>
+                </el-table>
+
+            </div>
+        </el-tab-pane>
+        <el-tab-pane label="角色管理" name="third">角色管理</el-tab-pane>
+        <el-tab-pane label="定时任务补偿" name="fourth">定时任务补偿</el-tab-pane>
+    </el-tabs>
+    <div>
+
+    </div>
+    <div style="display: flex;width: 100%">
+
+
+
+    </div>
+</div>
+
+
+<script src="/lib/js/jquery-1.10.2.min.js"></script>
+<script src="/lib/js/jquery.cookie.js"></script>
+<script src="/js/ajax-util.js"></script>
+<script src="/lib/js/template.js"></script>
+
+<!-- import Vue before Element -->
+<script src="/js/vue.js"></script>
+<!-- import JavaScript -->
+<script src="/js/index.js"></script>
+<script src="/js/showdown.min.js"></script>
+<script src="/js/axios.min.js"></script>
+
+<script>
+    function initMackDown(data) {
+        var converter = new showdown.Converter();
+        var html = converter.makeHtml(data);
+        return html;
+    }
+
+    var app = new Vue({
+        el: '#app',
+        data() {
+            return {
+                activeName: 'first',
+                models: [],
+                deployments: [],
+                loading: false,
+                loading_: false,
+                drawer: false,
+                dialogTableVisible:false,
+                total: 0,
+                page: 1,
+                size: 20,
+            }
+        },
+        mounted() {
+            this.init();
+            this.initDeployments();
+        },
+        methods: {
+            /*分页事件处理*/
+            handleSizeChange(val) {
+                this.size = val;
+                this.init()
+                console.log(`每页 ${val} 条`);
+            },
+            handleCurrentChange(val) {
+                this.page = val;
+                this.init();
+                console.log(`当前页: ${val}`);
+            },
+            newModel() {
+                //這裡必須要使用Ajax,axios不行，具體原因不清楚
+                AJAX.POST('/models/newModel');
+            },
+            init() {
+                this.loading = true;
+                let urlParam = "?page=" + this.page + "&size=" + this.size;
+                axios.get('/models' + urlParam,)
+                    .then(function (response) {
+                        console.log(response);
+                        let data = response.data.data;
+                        app.models = data.rows.list;
+                        app.total = data.rows.totalRows;
+                        app.loading = false;
+                    })
+                    .catch(function (error) {
+                        console.error(error);
+                    });
+            },
+            initDeployments() {
+                thisloading = true;
+                axios.get('/deployments')
+                    .then(function (response) {
+                        console.log(response);
+                        let data = response.data.data;
+                        app.deployments = data.rows.list;
+                        app.loading = false;
+                    })
+                    .catch(function (error) {
+                        console.error(error);
+                    });
+
+            },
+            editOpen(row) {
+                window.location.href = "/editor?modelId=" + row.id;
+            },
+            deleteOpen(row) {
+                this.loading = true;
+                axios.delete('/models/' + row.id,)
+                    .then(function (response) {
+                        if (response.data.status === "000") {
+                            app.loading = false;
+                            app.init();
+                            app.$message({
+                                message: response.data.msg,
+                                type: 'success',
+                                center: true,
+                            });
+                        }
+                    })
+                    .catch(function (error) {
+                        app.loading = false;
+                        debugger
+                        console.log(error);
+                    });
+            },
+            deploymentOpen(row) {
+                this.loading = true;
+                axios.post('/models/' + row.id + '/deployment', null)
+                    .then(function (response) {
+                        app.loading = false;
+                        if (response.data.status === "001") {
+                            app.$message({
+                                message: response.data.msg,
+                                type: 'warning',
+                                center: true,
+                            });
+                        } else {
+                            app.$message({
+                                message: response.data.msg,
+                                type: 'success',
+                                center: true,
+                            });
+                            app.initDeployments();
+                            app.init();
+                        }
+                        console.log(response);
+                    })
+                    .catch(function (error) {
+                        debugger
+                        console.log(error);
+                    });
+            },
+            deleteDeploymentsOpen(row) {
+                this.loading_ = true;
+                axios.delete('/deployments/' + row.id,)
+                    .then(function (response) {
+                        app.loading_ = false;
+                        if (response.data.status === "000") {
+                            app.initDeployments();
+                            app.$message({
+                                message: response.data.msg,
+                                type: 'success',
+                                center: true,
+                            });
+                        }
+                    }).catch(function (error) {
+                    app.loading_ = false;
+                    debugger
+                    console.log(error);
+                });
+            },
+            outDeploymentsOpen(row) {
+                window.open("/deployments/outDeploymentsOpen/" + row.id);
+            },
+            previewDeploymentsOpen(row) {
+                axios.get('/deployments/previewDeploymentsOpen/' + row.id)
+                    .then(function (response) {
+                        let data = response.data;
+                        let xml = window.initMackDown(data);
+                        xml = '<div style="width: 100%;height:700px;overflow: auto">' + xml + '</div>';
+                        app.$alert(xml, 'bpmn20.xml', {
+                            dangerouslyUseHTMLString: true,
+                            type: 'success',
+                            closeOnClickModal: true,
+                            closeOnPressEscape: true,
+                        });
+
+                    })
+                    .catch(function (error) {
+                        console.log(error);
+                    });
+
+            },
+            outDeploymentsOpenView(row) {
+                window.open("/deployments/outDeploymentsOpenView/" + row.id);
+            },
+            previewDeploymentsOpenView(row) {
+                axios.get('/deployments/previewDeploymentsOpenView/' + row.id)
+                    .then(function (response) {
+                        let data = response.data;
+                        xml = '<image style="width: 100%;height:700px;overflow: auto" src="data:;base64,' + data + '"></image>';
+                        let img = window.initMackDown(xml);
+                        app.$alert(img, '图片预览', {
+                            dangerouslyUseHTMLString: true,
+                            type: 'success',
+                            closeOnClickModal: true,
+                            closeOnPressEscape: true,
+                        });
+
+                    })
+                    .catch(function (error) {
+                        console.log(error);
+                    });
+            },
+            handleClick(row) {
+                console.log(row);
+            },
+            tableRowClassName({row, rowIndex}) {
+                if (row.editorSourceExtraValueId !=null) {
+                    return 'warning-row';
+                } else  {
+                    return 'success-row';
+                }
+                return '';
+            }
+        },
+    })
+</script>
+</body>
+</html>
