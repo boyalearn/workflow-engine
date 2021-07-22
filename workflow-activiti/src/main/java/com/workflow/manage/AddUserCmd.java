@@ -11,8 +11,8 @@ public class AddUserCmd implements Command<Void> {
     @Override
     public Void execute(CommandContext commandContext) {
         CustomUserEntity userEntity = new CustomUserEntity();
-        userEntity.setId("32323232");
-        userEntity.setAge(12);
+        userEntity.setId("32323231");
+        userEntity.setAge(13);
         commandContext.getDbSqlSession().insert(userEntity);
         return null;
     }

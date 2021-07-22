@@ -17,4 +17,6 @@ public class ProcessEngineDatabaseConfiguration {
         configuration.setDatabaseSchemaUpdate(ProcessEngineConfiguration.DB_SCHEMA_UPDATE_TRUE);
         return configuration;
     }
+
+
 }

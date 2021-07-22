@@ -27,6 +27,24 @@ import org.activiti.engine.task.Task;
 import java.util.List;
 
 /**
+ * 概念
+ *
+ * 流程文档 ：  resources/diagrams/node-jump.bpmn
+ *
+ * 流程定义 ：  将流程文档解析后的Java实例对象
+ *
+ * 活动 ：activity 流程文档里面定义的节点。
+ *
+ * 流程实例 ：  根据流程定义ID发起的流程就是流程实例
+ *
+ * 执行实例 ： 每个任务对应一个流程实例。
+ *
+ * 任务 ： 流程启动后流程引擎会更具流程定义生成的任务。
+ *
+ */
+
+
+/**
  * 1.确认需要跳转的节点以及跳转的目标节点
  * 2.确认需要跳转节点归属的流程文档
  * 3.获取需要体跳转的流程实例与执行实例
@@ -73,11 +91,8 @@ public class OverruleTaskCommand implements Command<Void> {
         }
         //找到上一个活动
         List<PvmTransition> incomingTransitions = activity.getIncomingTransitions();
-        for (PvmTransition incomingTransition : incomingTransitions) {
-            ActivityImpl source = (ActivityImpl)incomingTransition.getSource();
-            execution.setVariable("name","age");
-            execution.executeActivity(getActivity(source));
-        }
+        ActivityImpl source=(ActivityImpl) incomingTransitions.get(0).getSource();
+        execution.executeActivity(getActivity(source));
         return null;
     }
 
