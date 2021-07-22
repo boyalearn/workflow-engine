@@ -1,21 +1,24 @@
 package com.workflow.manage;
 
+import com.workflow.manage.entity.CustomUserEntity;
 import org.activiti.engine.ProcessEngine;
 import org.activiti.engine.ProcessEngineConfiguration;
 import org.activiti.engine.impl.cfg.StandaloneProcessEngineConfiguration;
+import org.activiti.engine.impl.interceptor.Command;
+import org.activiti.engine.impl.interceptor.CommandContext;
+import org.activiti.engine.impl.persistence.entity.TaskEntity;
 import org.activiti.engine.task.Task;
 
-import java.io.InputStream;
 import java.util.List;
 
-public class CustomProcessEngineConfiguration extends StandaloneProcessEngineConfiguration {
-    public CustomProcessEngineConfiguration() {
-        setDbIdentityUsed(false);
-    }
-
+public class AddUserCmd implements Command<Void> {
     @Override
-    protected InputStream getMyBatisXmlConfigurationSteam() {
-        return getResourceAsStream("mapping/mappings.xml");
+    public Void execute(CommandContext commandContext) {
+        CustomUserEntity userEntity=new CustomUserEntity();
+        userEntity.setId("32323232");
+        userEntity.setAge(12);
+        commandContext.getDbSqlSession().insert(userEntity);
+        return null;
     }
 
     public static void main(String[] args) {
@@ -26,10 +29,6 @@ public class CustomProcessEngineConfiguration extends StandaloneProcessEngineCon
         configuration.setJdbcPassword("12345678");
         configuration.setDatabaseSchemaUpdate(ProcessEngineConfiguration.DB_SCHEMA_UPDATE_TRUE);
         ProcessEngine processEngine = configuration.buildProcessEngine();
-        /*deploy(configuration);*/
-        List<Task> list = processEngine.getTaskService().createTaskQuery().list();
-        for (Task task : list) {
-            processEngine.getTaskService().complete(task.getId());
-        }
+        processEngine.getManagementService().executeCommand(new AddUserCmd());
     }
 }

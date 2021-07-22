@@ -2,11 +2,11 @@
 <definitions xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:activiti="http://activiti.org/bpmn" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" expressionLanguage="http://www.w3.org/1999/XPath" id="m1626870603474" name="" targetNamespace="http://www.activiti.org/testm1626870603474" typeLanguage="http://www.w3.org/2001/XMLSchema">
   <process id="node-jump" isClosed="false" isExecutable="true" processType="None">
     <startEvent id="_2" name="StartEvent"/>
-    <userTask activiti:exclusive="true" id="_3" name="UserTask"/>
-    <userTask activiti:exclusive="true" id="_4" name="UserTask"/>
+    <userTask activiti:exclusive="true" id="_3" name="UserTask1"/>
+    <userTask activiti:exclusive="true" id="_4" name="UserTask2"/>
     <parallelGateway gatewayDirection="Unspecified" id="_5" name="ParallelGateway"/>
-    <userTask activiti:exclusive="true" id="_6" name="UserTask"/>
-    <userTask activiti:exclusive="true" id="_7" name="UserTask"/>
+    <userTask activiti:exclusive="true" id="_6" name="UserTask3"/>
+    <userTask activiti:exclusive="true" id="_7" name="UserTask4"/>
     <endEvent id="_8" name="EndEvent"/>
     <sequenceFlow id="_9" sourceRef="_2" targetRef="_3"/>
     <sequenceFlow id="_10" sourceRef="_3" targetRef="_5"/>

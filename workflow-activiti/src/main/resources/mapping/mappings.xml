@@ -37,8 +37,8 @@
     <mapper resource="org/activiti/db/mapping/entity/Property.xml" />
     <mapper resource="org/activiti/db/mapping/entity/Resource.xml" />
     <mapper resource="org/activiti/db/mapping/entity/TableData.xml" />
-    <mapper resource="org/activiti/db/mapping/entity/Task.xml" />
-    <mapper resource="org/activiti/db/mapping/entity/User.xml" />
+    <mapper resource="mapping/entity/Task.xml" />
+    <mapper resource="mapping/entity/User.xml" />
     <mapper resource="org/activiti/db/mapping/entity/VariableInstance.xml" />
     <mapper resource="org/activiti/db/mapping/entity/EventSubscription.xml" />
     <mapper resource="org/activiti/db/mapping/entity/EventLogEntry.xml" />

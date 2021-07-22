@@ -6,6 +6,20 @@
 
   <!-- USER INSERT -->
 
+
+
+  <insert id="insertCustomUser" parameterType="org.activiti.engine.impl.persistence.entity.UserEntity">
+    insert into ${prefix}ACT_ID_USER (ID_, REV_, FIRST_, LAST_, EMAIL_, PWD_)
+    values (
+      #{id ,jdbcType=VARCHAR},
+      1,
+      #{firstName ,jdbcType=VARCHAR},
+      #{lastName ,jdbcType=VARCHAR},
+      #{email ,jdbcType=VARCHAR},
+      #{password ,jdbcType=VARCHAR}
+    )
+  </insert>
+
   <insert id="insertUser" parameterType="org.activiti.engine.impl.persistence.entity.UserEntity">
     insert into ${prefix}ACT_ID_USER (ID_, REV_, FIRST_, LAST_, EMAIL_, PWD_)
     values (
