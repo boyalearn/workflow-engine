@@ -6,15 +6,11 @@ import org.activiti.engine.ProcessEngineConfiguration;
 import org.activiti.engine.impl.cfg.StandaloneProcessEngineConfiguration;
 import org.activiti.engine.impl.interceptor.Command;
 import org.activiti.engine.impl.interceptor.CommandContext;
-import org.activiti.engine.impl.persistence.entity.TaskEntity;
-import org.activiti.engine.task.Task;
-
-import java.util.List;
 
 public class AddUserCmd implements Command<Void> {
     @Override
     public Void execute(CommandContext commandContext) {
-        CustomUserEntity userEntity=new CustomUserEntity();
+        CustomUserEntity userEntity = new CustomUserEntity();
         userEntity.setId("32323232");
         userEntity.setAge(12);
         commandContext.getDbSqlSession().insert(userEntity);
