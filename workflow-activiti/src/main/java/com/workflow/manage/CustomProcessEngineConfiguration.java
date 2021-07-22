@@ -8,6 +8,11 @@ import org.activiti.engine.task.Task;
 import java.io.InputStream;
 import java.util.List;
 
+/**
+ * 1.接管mybatis的mapper文件
+ * 2.修改对应的SQL
+ * 3.修改对应的承载实体类
+ */
 public class CustomProcessEngineConfiguration extends StandaloneProcessEngineConfiguration {
     public CustomProcessEngineConfiguration() {
         setDbIdentityUsed(false);

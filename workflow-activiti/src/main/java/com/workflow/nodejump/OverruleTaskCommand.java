@@ -75,6 +75,7 @@ public class OverruleTaskCommand implements Command<Void> {
         List<PvmTransition> incomingTransitions = activity.getIncomingTransitions();
         for (PvmTransition incomingTransition : incomingTransitions) {
             ActivityImpl source = (ActivityImpl)incomingTransition.getSource();
+            execution.setVariable("name","age");
             execution.executeActivity(getActivity(source));
         }
         return null;
