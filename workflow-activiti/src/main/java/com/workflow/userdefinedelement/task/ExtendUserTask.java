@@ -4,6 +4,8 @@ import org.activiti.bpmn.model.UserTask;
 
 public class ExtendUserTask extends UserTask {
 
+    private String ui;
+
     public ExtendUserTask(UserTask baseElement) {
         this.id = baseElement.getId();
         this.name = baseElement.getName();

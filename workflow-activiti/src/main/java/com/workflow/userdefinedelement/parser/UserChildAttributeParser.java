@@ -16,9 +16,9 @@ import javax.xml.stream.XMLStreamReader;
  * user-defined-element-parser
  *
  */
-public class UserChildElementParser extends BaseChildElementParser {
+public class UserChildAttributeParser extends BaseChildElementParser {
 
-    private static final String ELEMENT_NAME = "like";
+    private static final String ELEMENT_NAME = "ui";
 
     private static final String VALUE_KEY = "value";
 

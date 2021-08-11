@@ -14,14 +14,14 @@ import java.nio.charset.Charset;
 public class UserDefinedElementParser extends UserTaskXMLConverter {
     public UserDefinedElementParser() {
         super();
-        UserChildElementParser userChildElementParser = new UserChildElementParser();
+        UserChildAttributeParser userChildElementParser = new UserChildAttributeParser();
         super.childParserMap.put(userChildElementParser.getElementName(), userChildElementParser);
     }
 
     public static void main(String[] args) {
         InputStream bpmnFilePath = UserDefinedElementParser.class.getClassLoader().getResourceAsStream("diagrams/user-defined-element-parser.bpmn");
         InputStreamSource inputStreamSource = new InputStreamSource(bpmnFilePath);
-        BpmnXMLConverter.addConverter(new UserDefinedElementParser());
+        //BpmnXMLConverter.addConverter(new UserDefinedElementParser());
         BpmnXMLConverter bpmnXMLConverter = new BpmnXMLConverter();
         BpmnModel bpmnModel = bpmnXMLConverter.convertToBpmnModel(inputStreamSource, false, true, String.valueOf(Charset.defaultCharset()));
         System.out.println(bpmnModel);

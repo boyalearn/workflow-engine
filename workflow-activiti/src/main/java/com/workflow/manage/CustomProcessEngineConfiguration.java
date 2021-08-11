@@ -32,7 +32,7 @@ public class CustomProcessEngineConfiguration extends StandaloneProcessEngineCon
         configuration.setDatabaseSchemaUpdate(ProcessEngineConfiguration.DB_SCHEMA_UPDATE_TRUE);
         ProcessEngine processEngine = configuration.buildProcessEngine();
         /*deploy(configuration);*/
-        List<Task> list = processEngine.getTaskService().createTaskQuery().list();
+        List<Task> list = processEngine.getTaskService().createTaskQuery().processDefinitionId("test").list();
         for (Task task : list) {
             processEngine.getTaskService().complete(task.getId());
         }
